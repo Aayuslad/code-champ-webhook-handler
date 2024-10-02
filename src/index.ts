@@ -17,19 +17,20 @@ app.get("/", (req, res) => {
 });
 
 app.post("/submit-task-callback", async (req, res) => {
-	console.log("Webhook received");
-	console.log(req.body);
+	try {
+		await Prisma.submission.update({
+			where: {
+				id: req.body.submissionId,
+			},
+			data: {
+				status: req.body.status,
+			},
+		});
 
-	await Prisma.submission.update({
-		where: {
-			id: req.body.submissionId,
-		},
-		data: {
-			status: req.body.accepted ? "Accepted" : "Rejected",
-		},
-	});
-
-	res.json({ message: "Webhook received" });
+		return res.json({ message: "Webhook received" });
+	} catch (error) {
+		return res.status(500).json({ message: "Error updating submission status" });
+	}
 });
 
 app.listen(PORT, () => {

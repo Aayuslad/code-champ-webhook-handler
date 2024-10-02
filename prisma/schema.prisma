@@ -23,6 +23,8 @@ model User {
   Problem Problem[]
 
   Submission Submission[]
+
+  OngoingProblem OngoingProblem[]
 }
 
 model Problem {
@@ -34,11 +36,13 @@ model Problem {
   description         String          @db.VarChar(1000)
   functionStructure   String          @db.VarChar(1000)
   boilerplateCode     String
+  submissionCode      String
   sampleTestCasesKey  String // URL to the sample test cases JSON in S3
   testCasesKey        String // URL to the test cases JSON in S3
   constraints         Constraint[]
   topicTags           TopicTag[]
   hints               Hint[]
+  testCasesCount      Int             @default(0)
   likeCount           Int             @default(0)
   submissionCount     Int             @default(0)
   acceptedSubmissions Int             @default(0)
@@ -46,6 +50,14 @@ model Problem {
   createdAt           DateTime        @default(now())
   createdById         String
   createdBy           User            @relation(fields: [createdById], references: [id])
+}
+
+model OngoingProblem {
+  id        String @id @default(uuid())
+  problemId String
+  userId    String
+  solutions String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Constraint {
@@ -87,7 +99,10 @@ enum difficultyLevel {
 }
 
 enum submissionStatus {
-  Accepted
-  Rejected
-  Pending
+  Accepted          @map("Accepted")
+  Rejected          @map("Rejected")
+  Pending           @map("Pending")
+  CompilationError  @map("Compilation Error")
+  RunTimeError      @map("Run Time Error")
+  TimeLimitExceeded @map("Time Limit Exceeded")
 }
