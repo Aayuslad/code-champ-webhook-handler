@@ -17,6 +17,8 @@ app.get("/", (req, res) => {
 });
 
 app.post("/submit-task-callback", async (req, res) => {
+	console.log("req body: ", req.body);
+
 	try {
 		await Prisma.submission.update({
 			where: {
@@ -29,6 +31,8 @@ app.post("/submit-task-callback", async (req, res) => {
 
 		return res.json({ message: "Webhook received" });
 	} catch (error) {
+		console.log(error);
+
 		return res.status(500).json({ message: "Error updating submission status" });
 	}
 });
