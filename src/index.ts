@@ -25,7 +25,7 @@ app.post("/submit-task-callback", async (req, res) => {
 				id: req.body.submissionId,
 			},
 			data: {
-				status: req.body.status,
+				status: "CompilationError",
 			},
 		});
 
