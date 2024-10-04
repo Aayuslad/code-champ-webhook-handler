@@ -20,14 +20,30 @@ app.post("/submit-task-callback", async (req, res) => {
 	console.log("req body: ", req.body);
 
 	try {
-		await Prisma.submission.update({
+		const problem = await Prisma.submission.update({
 			where: {
 				id: req.body.submissionId,
 			},
 			data: {
 				status: req.body.status,
 			},
+			select: {
+				id: true,
+			},
 		});
+
+		if (req.body.status === "Accepted") {
+			await Prisma.problem.update({
+				where: {
+					id: problem.id,
+				},
+				data: {
+					acceptedSubmissions: {
+						increment: 1,
+					},
+				},
+			});
+		}
 
 		return res.json({ message: "Webhook received" });
 	} catch (error) {
