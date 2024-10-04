@@ -32,6 +32,9 @@ app.post("/submit-task-callback", async (req, res) => {
 			},
 		});
 
+		console.log("problem: ", problem);
+		
+
 		if (req.body.status === "Accepted") {
 			await Prisma.problem.update({
 				where: {
