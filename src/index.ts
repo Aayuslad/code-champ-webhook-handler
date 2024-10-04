@@ -28,17 +28,14 @@ app.post("/submit-task-callback", async (req, res) => {
 				status: req.body.status,
 			},
 			select: {
-				id: true,
+				problemId: true,
 			},
-		});
-
-		console.log("problem: ", problem);
-		
+		});		
 
 		if (req.body.status === "Accepted") {
 			await Prisma.problem.update({
 				where: {
-					id: problem.id,
+					id: problem.problemId,
 				},
 				data: {
 					acceptedSubmissions: {
